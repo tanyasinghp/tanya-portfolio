@@ -1,26 +1,84 @@
 @import "tailwindcss";
 
+/* ========== THEME TOKENS ========== */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Backgrounds */
+  --bg-pure: #0D0D0F;
+  --bg-surface: #131316;
+  --bg-elevated: #1A1A1E;
+
+  /* Borders */
+  --border-subtle: #2A2A2D;
+
+  /* Text */
+  --text-heading: #F5F5F7;
+  --text-body: #CFCFCF;
+  --text-accent: #C78BFF;
+
+  /* Accent / Lavender */
+  --accent: #C78BFF;
+  --accent-glow: rgba(199, 139, 255, 0.08);
+  --accent-glow-strong: rgba(199, 139, 255, 0.15);
+
+  /* Layout */
+  --content-max: 1024px;
+  --content-padding: 24px;
+  --section-gap: 88px; /* 80–100px */
+  --card-radius: 24px;
+  --card-padding: 48px; /* 40–56px */
+  --card-shadow: 0 0 25px rgba(199, 139, 255, 0.08);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+html,
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg-pure);
+  color: var(--text-heading);
+  margin: 0;
+  padding: 0;
+  scroll-behavior: smooth;
+}
+
+/* Prevent horizontal scroll on all devices */
+html,
+body {
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Smooth scroll offset for fixed nav */
+html {
+  scroll-padding-bottom: 100px;
+}
+
+/* Safe area for notched devices (phones/tablets) */
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* Hide scrollbar but keep scroll (for nav on small screens) */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.nav-touch-scroll {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Game intro: shake when ball is missed */
+@keyframes game-intro-shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+.game-intro-shake {
+  animation: game-intro-shake 0.15s ease-in-out 2;
+}
+
+/* Display font for name / big headers (Space Grotesk) */
+.font-display {
+  font-family: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
 }
