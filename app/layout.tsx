@@ -15,7 +15,7 @@ const spaceGrotesk = Space_Grotesk({
 
 export const metadata: Metadata = {
   title: "Tanya Singh",
-  description: "AI ML & Data Science Engineer | Building generative AI solutions at scale",
+  description: "AI ML Engineer | Data Science | Building generative AI solutions at scale",
 };
 
 export const viewport: Viewport = {

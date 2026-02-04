@@ -414,9 +414,9 @@ export default function HomePage() {
             >
               {gameOpen && <GameIntro />}
             </div>
-            <p className="mt-4 text-xs sm:text-sm text-[#CFCFCF]/90 leading-relaxed">
+            {/* <p className="mt-4 text-xs sm:text-sm text-[#CFCFCF]/90 leading-relaxed">
               Move with your mouse (or touch), or use Arrow keys / A-D. Catch 10 balls to complete.
-            </p>
+            </p> */}
           </div>
         </aside>
       </div>

@@ -36,7 +36,7 @@ export default function AboutSection({ socialLinks }: AboutSectionProps) {
             Tanya Singh
           </h1>
           <p className="text-[#C78BFF] mt-1 sm:mt-2 tracking-wide text-base sm:text-lg">
-            AI ML & Data Science Engineer • Full Stack Developer
+            AI ML Engineer • Data Scientist • Full Stack Developer
           </p>
           <SocialLinks links={socialLinks} />
           <p className="text-[#CFCFCF] mt-4 sm:mt-6 text-sm sm:text-base leading-relaxed max-w-xl">
