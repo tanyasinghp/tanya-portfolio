@@ -3,14 +3,28 @@
 import { useState, useEffect } from "react";
 
 const NAV_ITEMS = [
-  { id: "hero", label: "Home" },
-  { id: "about", label: "About" },
-  { id: "work", label: "Work" },
-  { id: "skills", label: "Skills" },
-  { id: "blogs", label: "Blog" },
-  { id: "ooo", label: "OOO" },
-  // { id: "menu", label: "Menu" },
+  { id: "hero", label: "Home", targets: [] as const },
+  { id: "about", label: "About", targets: ["about"] as const },
+  { id: "work", label: "Work", targets: ["work"] as const },
+  { id: "skills", label: "Skills", targets: ["skills"] as const },
+  { id: "blogs", label: "Blogs", targets: ["blogs"] as const },
+  // OOO covers both "Experience Beyond Tech" and "When I'm OOO"
+  { id: "ooo", label: "OOO", targets: ["work-outside", "ooo"] as const },
 ] as const;
+
+type NavId = (typeof NAV_ITEMS)[number]["id"];
+
+const TARGET_IDS = ["about", "work", "skills", "blogs", "work-outside", "ooo"] as const;
+type TargetId = (typeof TARGET_IDS)[number];
+
+const TARGET_TO_NAV: Record<TargetId, NavId> = {
+  about: "about",
+  work: "work",
+  skills: "skills",
+  blogs: "blogs",
+  "work-outside": "ooo",
+  ooo: "ooo",
+};
 
 function NavIcon({ name }: { name: string }) {
   const icons: Record<string, React.ReactNode> = {
@@ -34,7 +48,7 @@ function NavIcon({ name }: { name: string }) {
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
       </svg>
     ),
-    Blog: (
+    Blogs: (
       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
       </svg>
@@ -54,39 +68,90 @@ function NavIcon({ name }: { name: string }) {
 }
 
 export default function Navbar() {
-  const [activeId, setActiveId] = useState<string>("hero");
+  const [activeId, setActiveId] = useState<NavId>("hero");
 
   useEffect(() => {
-    const sections = NAV_ITEMS.map(({ id }) => ({ id, el: document.getElementById(id) })).filter(
-      (s): s is { id: (typeof NAV_ITEMS)[number]["id"]; el: HTMLElement } => !!s.el
-    );
-    if (sections.length === 0) return;
+    const targets: { id: TargetId; el: HTMLElement }[] = [];
+    for (const tid of TARGET_IDS) {
+      const el = document.getElementById(tid);
+      if (el) targets.push({ id: tid, el });
+    }
 
-    const onScroll = () => {
-      const scrollY = window.scrollY + 140;
-      for (let i = sections.length - 1; i >= 0; i--) {
-        const top = sections[i].el.getBoundingClientRect().top + window.scrollY;
-        if (scrollY >= top) {
-          setActiveId(sections[i].id);
-          return;
-        }
+    if (targets.length === 0) return;
+
+    let rafId: number | null = null;
+
+    const updateActive = () => {
+      rafId = null;
+
+      // Top of page → Home
+      if (window.scrollY < 24) {
+        setActiveId("hero");
+        return;
       }
-      setActiveId("hero");
+
+      const vh = Math.max(1, window.innerHeight);
+      let best: { id: TargetId; score: number } | null = null;
+
+      for (const t of targets) {
+        const rect = t.el.getBoundingClientRect();
+        const visiblePx = Math.max(0, Math.min(rect.bottom, vh) - Math.max(rect.top, 0));
+        const denom = Math.max(1, Math.min(vh, rect.height));
+        const score = visiblePx / denom;
+
+        if (!best || score > best.score) best = { id: t.id, score };
+      }
+
+      // If nothing is meaningfully visible, don't thrash state.
+      if (best && best.score > 0.12) setActiveId(TARGET_TO_NAV[best.id]);
     };
 
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    const scheduleUpdate = () => {
+      if (rafId != null) return;
+      rafId = requestAnimationFrame(updateActive);
+    };
+
+    updateActive();
+    window.addEventListener("scroll", scheduleUpdate, { passive: true });
+    window.addEventListener("resize", scheduleUpdate);
+    return () => {
+      window.removeEventListener("scroll", scheduleUpdate);
+      window.removeEventListener("resize", scheduleUpdate);
+      if (rafId != null) cancelAnimationFrame(rafId);
+    };
   }, []);
 
-  const scrollTo = (id: string) => {
+  const scrollTo = (id: NavId) => {
     if (id === "hero") {
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      const scroller = document.scrollingElement;
+      if (scroller) {
+        scroller.scrollTo({ top: 0, behavior: "smooth" });
+      } else {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
       return;
     }
-    // if (id === "menu") return; // placeholder
-    // const el = document.getElementById(id);
-    // el?.scrollIntoView({ behavior: "smooth" });
+
+    // Regular items scroll to their section.
+    if (id !== "ooo") {
+      document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+      return;
+    }
+
+    // OOO toggles between "Experience Beyond Tech" and "When I'm OOO".
+    const workOutside = document.getElementById("work-outside");
+    const ooo = document.getElementById("ooo");
+    if (!workOutside && !ooo) return;
+
+    if (workOutside && ooo) {
+      const wo = workOutside.getBoundingClientRect();
+      const anchorY = window.innerHeight * 0.25;
+      const inWorkOutside = wo.top <= anchorY && wo.bottom >= anchorY;
+      (inWorkOutside ? ooo : workOutside).scrollIntoView({ behavior: "smooth", block: "start" });
+      return;
+    }
+
+    (workOutside ?? ooo)?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
   return (
