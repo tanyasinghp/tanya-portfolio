@@ -123,12 +123,10 @@ export default function Navbar() {
 
   const scrollTo = (id: NavId) => {
     if (id === "hero") {
-      const scroller = document.scrollingElement;
-      if (scroller) {
-        scroller.scrollTo({ top: 0, behavior: "smooth" });
-      } else {
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      }
+      document.getElementById("about")?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
       return;
     }
 
