@@ -2,6 +2,15 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 
+function formatTime(ms: number) {
+  const mins = Math.floor(ms / 60000);
+  const secs = Math.floor((ms % 60000) / 1000);
+  const tenth = Math.floor((ms % 1000) / 10);
+  return `${mins}:${secs.toString().padStart(2, "0")}.${tenth
+    .toString()
+    .padStart(2, "0")}`;
+}
+
 export interface GameIntroProps {
   /** Optional: called when player catches 10 balls. */
   onGameComplete?: () => void;
@@ -150,12 +159,6 @@ export default function GameIntro({ onGameComplete }: GameIntroProps) {
     const g = gameRef.current;
     if (!canvas || !ctx || !g.running) return;
 
-    if (!timerStarted) {
-      startTimeRef.current = now;
-      timerRef.current = requestAnimationFrame(updateTime);
-      setTimerStarted(true);
-    }
-
     const dt = Math.min((now - g.lastTime) / 1000, 0.05);
     g.lastTime = now;
 
@@ -220,7 +223,8 @@ export default function GameIntro({ onGameComplete }: GameIntroProps) {
       setScore(newScore);
 
       if (newScore >= TARGET_SCORE) {
-        setFinalTime(formattedTime);        // ⭐ capture final stopwatch time
+        const endTime = now - startTimeRef.current;   // ⭐ precise finish time
+        setFinalTime(formatTime(endTime));            // ⭐ convert to text
         setCompleted(true);
         stop();
         onGameComplete?.();
