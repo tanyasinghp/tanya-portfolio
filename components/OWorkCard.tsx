@@ -10,9 +10,10 @@ interface OWorkCardProps {
   icon: string;      // emoji or icon
   heading: string;   // e.g. "Dance Instructor"
   roles: OutsideRole[];
+  details: string;
 }
 
-export default function OWorkCard({ icon, heading, roles }: OWorkCardProps) {
+export default function OWorkCard({ icon, heading, roles, details }: OWorkCardProps) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -58,7 +59,7 @@ export default function OWorkCard({ icon, heading, roles }: OWorkCardProps) {
             ))}
           </div>
 
-          {/* <div className="mt-4 flex justify-end">
+          <div className="mt-4 flex justify-end">
             <button
               type="button"
               onClick={() => setOpen(true)}
@@ -71,7 +72,7 @@ export default function OWorkCard({ icon, heading, roles }: OWorkCardProps) {
             >
               Know more →
             </button>
-          </div> */}
+          </div>
 
         </div>
       </div>
@@ -120,9 +121,8 @@ export default function OWorkCard({ icon, heading, roles }: OWorkCardProps) {
               {roles.map((r, idx) => (
                 <p key={idx}>{r.description}</p>
               ))}
-              <p className="mt-2 text-[#C78BFF]">
-                Detailed content about <span className="font-semibold">{heading}</span> will appear
-                here. Add your own stories, links, or media to showcase this experience.
+              <p className="mt-2 text-[#CFCFCF]">
+                {details}
               </p>
             </div>
           </div>

@@ -96,15 +96,42 @@ const WORK_ITEMS = [
       {
         role: "AI Engineer",
         dates: "May 2025 – Present",
-        description: "Working on GenAI workflows for GAIF and the Business AI unit’s enterprise code migration systems building RAG pipelines, evaluating LLM behavior through structured experiments, curating heterogeneous datasets, and exploring knowledge-graph augmented retrieval and orchestration for SAP Joule to improve grounding and model consistency",
+        description: "Build enterprise GenAI workflows for code-intelligence systems, including high-performance RAG pipelines, structured LLM evaluations, heterogeneous dataset curation, and knowledge-graph–augmented retrieval and orchestration to improve grounding and consistency for AI experiences powering SAP Joule.",
       },
       {
         role: "Full Stack Developer",
         dates: "August 2024 – May 2025",
-        description: "Focused on building full-stack, employee-centric applications across the MD’s Office, supporting platforms used by 7,000+ employees."
+        description: "Focused on building full-stack, employee-centric applications for the MD’s Office, delivering reliable platforms that streamline workflows and enhance productivity for 7,000+ employees across the organization."
       },
     ],
   },
+  // {
+  //   companyName: "ShipsKart",
+  //   tag: "Delhi, India",
+  //   roles: [
+  //     {
+  //       role: "Intern - Full Stack Developer",
+  //       dates: "April 2024 – June 2024",
+  //       description:
+  //         "Developed backend systems for fleet and maritime operations for improving performance, enabling real-time communication features, and exploring LLM-driven product recommendations for their e-commerce platform",
+  //     },
+  //   ],
+  // },
+  // {
+  //   companyName: "JMR Infotech",
+  //   tag: "Bengaluru, India",
+  //   roles: [
+  //     {
+  //       role: "Intern - Software Engineer",
+  //       dates: "August 2022 – October 2022",
+  //       description:
+  //         "Worked on financial-domain data analysis and fraud-detection workflows, building ML models and visual analytics to support decision-making.",
+  //     },
+  //   ],
+  // },
+];
+
+const INTERNSHIP_ITEMS = [
   {
     companyName: "ShipsKart",
     tag: "Delhi, India",
@@ -113,7 +140,7 @@ const WORK_ITEMS = [
         role: "Intern - Full Stack Developer",
         dates: "April 2024 – June 2024",
         description:
-          "Developed backend systems for fleet and maritime operations for improving performance, enabling real-time communication features, and exploring LLM-driven product recommendations for their e-commerce platform",
+          "Developed backend systems for fleet and maritime operations and explored LLM-driven product recommendations for their e-commerce platform.",
       },
     ],
   },
@@ -171,23 +198,26 @@ const BLOG_ITEMS = [
 
 const OWORK_ITEMS = [
   {
-  icon: "🩰",
-  heading: "Dance Instructor",
-  roles: [
-    {
-      description: "Taught dance to kids, handled choreography, and occasionally prevented chaos through rhythm."
-    }
-   ]
+    icon: "🩰",
+    heading: "Dance Instructor",
+    roles: [
+      {
+        description: "Contemporary, Freestyle, Jazz"
+      }
+    ],
+    details:
+      "I taught kids across different age groups, choreographed performances, and managed structured practice sessions. This experience strengthened my patience, creativity, and leadership."
   },
   {
     icon: "📐",
-    heading: "Math Olympiad Coach – SASMO, AMO & International STEM Olympiads",
+    heading: "Math Olympiad Coach",
     roles: [
       {
-        description:
-          "Coached and mentored students for international olympiads",
-      },
+        description: "SASMO, AMO & International STEM Olympiads"
+      }
     ],
+    details:
+      "Mentored and trained students in logical reasoning, pattern recognition, and competitive exam strategy. Helped multiple students secure international rankings and developed intuitive problem-solving frameworks."
   },
   {
     icon: "🧘‍♀️",
@@ -195,9 +225,11 @@ const OWORK_ITEMS = [
     roles: [
       {
         description:
-          "I’m a certified yoga instructor, the kind who can hold a plank and a conversation. I’ve taught classes that blend strength and breathwork(Also useful: yoga keeps me calm when debugging)",
-      },
+          "fun stuff!"
+      }
     ],
+    details:
+      "Completed international yoga certification and taught structured yoga sessions focusing on breathwork, balance, and strength. This experience keeps me grounded and helps with mindfulness and discipline."
   },
 ];
 
@@ -229,6 +261,7 @@ const OOO_ITEMS = [
 
 export default function HomePage() {
   const [gameOpen, setGameOpen] = useState(false);
+  const [showInternships, setShowInternships] = useState(false);
 
   useEffect(() => {
     if (!gameOpen) return;
@@ -253,9 +286,31 @@ export default function HomePage() {
           <SectionCard>
             <SectionHeading title="Work Experience" />
             <div className="flex flex-col gap-5">
+              {/* Always show main work (SAP Labs) */}
               {WORK_ITEMS.map((item) => (
                 <WorkCard key={item.companyName} {...item} />
               ))}
+
+              {/* Expandable Internships */}
+              {showInternships && (
+                <div className="flex flex-col gap-5 mt-4">
+                  {INTERNSHIP_ITEMS.map((item) => (
+                    <WorkCard key={item.companyName} {...item} />
+                  ))}
+                </div>
+              )}
+
+              {/* Toggle Button */}
+              <button
+                onClick={() => setShowInternships(!showInternships)}
+                className="mt-4 px-6 py-2 rounded-xl text-sm font-semibold
+                          bg-[#1A1A1E] border border-[#C78BFF]/60
+                          text-[#C78BFF] shadow-[0_0_15px_rgba(199,139,255,0.35)]
+                          hover:shadow-[0_0_25px_rgba(199,139,255,0.55)]
+                          transition"
+              >
+                {showInternships ? "Show Less" : "More Experience"}
+              </button>
             </div>
           </SectionCard>
         </section>
