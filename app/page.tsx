@@ -64,14 +64,14 @@ export default function Intro() {
               mt-3 sm:mt-4 w-full
               // text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl
               text-[0.8rem] sm:text-[0.85rem] md:text-[0.9rem] lg:text-[0.95rem]
-              whitespace-nowrap
+              whitespace-normal
               tracking-[0.12em] sm:tracking-[0.2em] md:tracking-[0.35em]
               text-[#C78BFF] uppercase text-center leading-snug
               transition-opacity duration-700
               ${showSubtitle ? "opacity-100" : "opacity-0"}
             `}
           >
-            AI ML Engineer | Data Science | BUILDING GENERATIVE AI & FULL STACK SOLUTIONS AT SCALE
+            BUILDING GENERATIVE AI, DATA & FULL STACK SOLUTIONS AT SCALE
           </p>
         </div>
       )}
