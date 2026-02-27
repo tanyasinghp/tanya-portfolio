@@ -48,6 +48,23 @@ export default function GameIntro({ onGameComplete }: GameIntroProps) {
   const [completed, setCompleted] = useState(false);
   const [shake, setShake] = useState(false);
 
+  const [time, setTime] = useState(0);
+  const [finalTime, setFinalTime] = useState("0:00.00");
+  const timerRef = useRef<number | null>(null);
+  const startTimeRef = useRef(0);
+  const [timerStarted, setTimerStarted] = useState(false);
+
+  //// INSERT THIS BLOCK — formatted stopwatch text
+  const formattedTime = useMemo(() => {
+    const t = time;
+    const mins = Math.floor(t / 60000);
+    const secs = Math.floor((t % 60000) / 1000);
+    const ms = Math.floor((t % 1000) / 10);
+    return `${mins}:${secs.toString().padStart(2, "0")}.${ms
+      .toString()
+      .padStart(2, "0")}`;
+  }, [time]);
+
   const palette = useMemo(
     () => ["#C78BFF", "#4cc9f0", "#00f5d4", "#f72585", "#b5179e", "#7209b7"],
     []
@@ -68,10 +85,19 @@ export default function GameIntro({ onGameComplete }: GameIntroProps) {
     lastTime: 0,
   });
 
+  //// INSERT THIS BLOCK — stopwatch animation loop
+  const updateTime = (now: number) => {
+    setTime(now - startTimeRef.current);
+    timerRef.current = requestAnimationFrame(updateTime);
+  };
+
   const stop = () => {
     gameRef.current.running = false;
     if (rafRef.current != null) cancelAnimationFrame(rafRef.current);
     rafRef.current = null;
+
+    /// ADD stopwatch stop
+    if (timerRef.current != null) cancelAnimationFrame(timerRef.current);
   };
 
   const start = () => {
@@ -80,6 +106,10 @@ export default function GameIntro({ onGameComplete }: GameIntroProps) {
     g.running = true;
     g.lastTime = performance.now();
     rafRef.current = requestAnimationFrame(loop);
+
+    /// ADD stopwatch start
+    startTimeRef.current = performance.now();
+    timerRef.current = requestAnimationFrame(updateTime);
   };
 
   const reset = () => {
@@ -89,7 +119,12 @@ export default function GameIntro({ onGameComplete }: GameIntroProps) {
     g.spawnAcc = 0;
     scoreRef.current = 0;
     setScore(0);
+
     setCompleted(false);
+    setTimerStarted(false);  // ⭐ reset
+    timerRef.current = null; // ⭐ allow new start
+    setTime(0);              // ⭐ reset displayed time
+    setFinalTime("0:00.00"); // ⭐
     start();
   };
 
@@ -114,6 +149,12 @@ export default function GameIntro({ onGameComplete }: GameIntroProps) {
     const ctx = canvas?.getContext("2d");
     const g = gameRef.current;
     if (!canvas || !ctx || !g.running) return;
+
+    if (!timerStarted) {
+      startTimeRef.current = now;
+      timerRef.current = requestAnimationFrame(updateTime);
+      setTimerStarted(true);
+    }
 
     const dt = Math.min((now - g.lastTime) / 1000, 0.05);
     g.lastTime = now;
@@ -140,6 +181,11 @@ export default function GameIntro({ onGameComplete }: GameIntroProps) {
       });
     }
 
+    // if (g.balls.length === 1 && timerRef.current === null) {
+    //   startTimeRef.current = now;
+    //   timerRef.current = requestAnimationFrame(updateTime);
+    // }
+
     // Increase speed over time
     g.baseSpeed += dt * 0.12;
 
@@ -151,6 +197,11 @@ export default function GameIntro({ onGameComplete }: GameIntroProps) {
     for (let i = 0; i < g.balls.length; i++) {
       const ball = g.balls[i];
       ball.y += ball.vy * (dt * 60);
+      if (!timerStarted && timerRef.current === null && ball.y > -BALL_RADIUS + 5) {
+        startTimeRef.current = now;
+        timerRef.current = requestAnimationFrame(updateTime);
+        setTimerStarted(true);
+      }
 
       if (circleRectCollision(ball.x, ball.y, ball.r, bx, by, BASKET_WIDTH, BASKET_HEIGHT)) {
         toRemove.push(i);
@@ -169,6 +220,7 @@ export default function GameIntro({ onGameComplete }: GameIntroProps) {
       setScore(newScore);
 
       if (newScore >= TARGET_SCORE) {
+        setFinalTime(formattedTime);        // ⭐ capture final stopwatch time
         setCompleted(true);
         stop();
         onGameComplete?.();
@@ -305,11 +357,19 @@ export default function GameIntro({ onGameComplete }: GameIntroProps) {
       ref={wrapperRef}
       className="relative w-full h-full bg-[#0D0D0F] overflow-hidden rounded-2xl border border-[#2A2A2D]"
     >
-      <div
-        className="absolute top-3 left-1/2 -translate-x-1/2 z-10 text-sm sm:text-base font-semibold text-[#C78BFF] tabular-nums"
-        style={{ textShadow: "0 0 16px rgba(199,139,255,0.45)" }}
-      >
-        {score} / {TARGET_SCORE}
+      <div className="absolute top-3 left-1/2 -translate-x-1/2 z-10 text-center">
+        <div
+          className="text-sm sm:text-base font-semibold text-[#C78BFF] tabular-nums"
+          style={{ textShadow: "0 0 16px rgba(199,139,255,0.45)" }}
+        >
+          {score} / {TARGET_SCORE}
+        </div>
+        <div
+          className="text-[10px] sm:text-xs text-[#CFCFCF]/80 mt-1 tabular-nums"
+          style={{ textShadow: "0 0 8px rgba(255,255,255,0.15)" }}
+        >
+          {formattedTime}
+        </div>
       </div>
 
       <canvas
@@ -326,6 +386,9 @@ export default function GameIntro({ onGameComplete }: GameIntroProps) {
             <p className="text-[#F5F5F7] text-lg sm:text-xl font-semibold">Nice catch.</p>
             <p className="text-[#CFCFCF] text-sm sm:text-base mt-2">
               You caught {TARGET_SCORE} balls. Play again anytime.
+            </p>
+            <p className="text-[#C78BFF] text-sm sm:text-base mt-3 font-semibold tabular-nums">
+              Time: {finalTime}
             </p>
             <button
               type="button"

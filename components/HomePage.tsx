@@ -312,6 +312,11 @@ export default function HomePage() {
             </p>
           </SectionCard>
         </section>
+        
+        <footer className="w-full text-left py-10 text-xs tracking-[0.18em] text-[#CFCFCF]/60">
+          © Tanya Singh 2026
+        </footer>
+
       </div>
 
       <Navbar />
@@ -418,6 +423,7 @@ export default function HomePage() {
               Move with your mouse (or touch), or use Arrow keys / A-D. Catch 10 balls to complete.
             </p> */}
           </div>
+          
         </aside>
       </div>
     </div>
