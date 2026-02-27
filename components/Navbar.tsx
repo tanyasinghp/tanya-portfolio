@@ -163,7 +163,7 @@ export default function Navbar() {
     >
       <div
         className="
-          w-full max-w-[640px]
+          w-full max-w-none sm:max-w-[640px]
           rounded-full
           bg-[#131316]/95 backdrop-blur-xl
           border border-[#2A2A2D]
@@ -171,7 +171,7 @@ export default function Navbar() {
           py-2.5 px-2 sm:px-4
           overflow-x-auto overflow-y-hidden
           flex items-center gap-1 sm:gap-2
-          justify-start sm:justify-center
+          justify-between
           scrollbar-hide nav-touch-scroll
         "
       >

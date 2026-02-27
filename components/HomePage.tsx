@@ -353,7 +353,7 @@ export default function HomePage() {
 
 
         {/* When I'm OOO */}
-        <section id="ooo" className="pb-20 sm:pb-24 md:pb-28">
+        <section id="ooo" className="pb-10 sm:pb-12 md:pb-14">
           <SectionCard>
             <SectionHeading title="When I'm OOO" />
             <div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-8 lg:grid-cols-10 xl:grid-cols-11 gap-3">
