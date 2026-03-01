@@ -18,8 +18,8 @@ const SOCIAL_LINKS = [
   { type: "linkedin" as const, href: "https://www.linkedin.com/in/taanyyasingh/", label: "LinkedIn" },
   { type: "github" as const, href: "https://github.com/tanyasinghp", label: "GitHub" },
   { type: "email" as const, href: "mailto:taanyasinghp2001@gmail.com", label: "Email" },
-  { type: "medium" as const, href: "https://medium.com/@taanyasingh2001/", label: "Medium" },
-  { type: "substack" as const, href: "https://yourusername.substack.com", label: "Substack" },
+  { type: "medium" as const, href: "https://medium.com/@taanyasingh", label: "Medium" },
+  // { type: "substack" as const, href: "https://yourusername.substack.com", label: "Substack" },
 ];
 
 const SKILLS = [
@@ -96,7 +96,7 @@ const WORK_ITEMS = [
       {
         role: "AI Engineer",
         dates: "May 2025 – Present",
-        description: "Build enterprise GenAI workflows for code-intelligence systems, including high-performance RAG pipelines, structured LLM evaluations, heterogeneous dataset curation, and knowledge-graph–augmented retrieval and orchestration to improve grounding and consistency for AI experiences powering SAP Joule.",
+        description: "Built enterprise GenAI workflows for code-intelligence systems, including high-performance RAG pipelines, agents, structured LLM evaluations, heterogeneous dataset curation, and knowledge-graph–augmented retrieval and orchestration to improve grounding and consistency for AI experiences powering SAP Joule.",
       },
       {
         role: "Full Stack Developer",
@@ -166,7 +166,7 @@ const BLOG_ITEMS = [
     readTime: "5 min read",
     intro:
       "A complete, real-world DevSecOps pipeline—GitHub Actions, Snyk, Sentry, and Vercel working together to deliver secure, automated deployments with zero manual effort.",
-    href: "https://medium.com/@taanyasingh2001/enhancing-devsecops-with-ci-cd-using-github-actions-snyk-sentry-and-vercel-e19ec262f67f",
+    href: "https://medium.com/@taanyasingh/enhancing-devsecops-with-ci-cd-using-github-actions-snyk-sentry-and-vercel-e19ec262f67f",
   },
   {
     title: "Real Integration Testing with Testcontainers: A Guide for Devs & Testers",
@@ -174,7 +174,7 @@ const BLOG_ITEMS = [
     readTime: "5 min read",
     intro:
       "Stop relying on mocks, here’s how Testcontainers lets you run real infrastructure in your tests and finally catch the bugs that only show up in production.",
-    href: "https://medium.com/@taanyasingh2001/testing-with-real-databases-using-testcontainers-a-guide-for-devs-testers-ecebb2e7b188",
+    href: "https://medium.com/@taanyasingh/testing-with-real-databases-using-testcontainers-a-guide-for-devs-testers-ecebb2e7b188",
   },
 
   // {
